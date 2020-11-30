@@ -1,0 +1,48 @@
+name: Test package against Go versions
+
+on: [ push, pull_request ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'go/src/github.com/bugsnag/bugsnag-go-gin' # relative to $GITHUB_WORKSPACE
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: ['1.11', '1.12', '1.13', '1.14', '1.15']
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: 'go/src/github.com/bugsnag/bugsnag-go-gin' # relative to $GITHUB_WORKSPACE
+    - name: setup go ${{ matrix.go-version }}
+      run: |
+        curl --silent --location --output gimme https://github.com/travis-ci/gimme/raw/v1.5.4/gimme
+        chmod +x ./gimme
+        eval "$(./gimme ${{ matrix.go-version }})"
+    - name: set GOPATH
+      run: echo "GOPATH=$GITHUB_WORKSPACE/go" >> $GITHUB_ENV
+    - name: install dependencies
+      run: go get -v -d -t ./...
+    - name: run tests
+      run: go test
+    - name: vet package
+      # go1.12 vet shows spurious 'unknown identifier' issues
+      if: matrix.go-version != '1.12'
+      run: go vet
+
+    - name: install integration dependencies
+      run: |
+        sudo apt-get install docker-compose
+        sudo gem install bundler
+        bundle install
+    - name: maze tests
+      env:
+        GO_VERSION: ${{ matrix.go-version }}
+      run: |
+        GIN_VERSION=v1.3.0 bundle exec bugsnag-maze-runner --color --format progress
+        GIN_VERSION=v1.2 bundle exec bugsnag-maze-runner --color --format progress
+        GIN_VERSION=v1.0 bundle exec bugsnag-maze-runner --color --format progress
