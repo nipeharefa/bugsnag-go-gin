@@ -30,7 +30,9 @@ jobs:
     - name: vet package
       # go1.12 vet shows spurious 'unknown identifier' issues
       if: matrix.go-version != '1.12'
-      run: go vet
+      run: go vet ./...
+    - name: build examples
+      run: go build -o example-app ./example
 
     - name: install integration dependencies
       run: |
