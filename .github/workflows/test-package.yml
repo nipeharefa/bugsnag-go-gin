@@ -18,13 +18,11 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: 'go/src/github.com/bugsnag/bugsnag-go-gin' # relative to $GITHUB_WORKSPACE
-    - name: setup go ${{ matrix.go-version }}
-      run: |
-        curl --silent --location --output gimme https://github.com/travis-ci/gimme/raw/v1.5.4/gimme
-        chmod +x ./gimme
-        eval "$(./gimme ${{ matrix.go-version }})"
     - name: set GOPATH
       run: echo "GOPATH=$GITHUB_WORKSPACE/go" >> $GITHUB_ENV
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
     - name: install dependencies
       run: go get -v -d -t ./...
     - name: run tests
