@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/bugsnag/bugsnag-go"
+	"github.com/bugsnag/bugsnag-go/v2"
 	"github.com/bugsnag/bugsnag-go-gin"
-	. "github.com/bugsnag/bugsnag-go/testutil"
+	. "github.com/bugsnag/bugsnag-go/v2/testutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -75,7 +75,7 @@ func TestGin(t *testing.T) {
 				"version": "%s"
 			}
 		}
-		`, hostname, userID, bugsnag.VERSION))
+		`, hostname, userID, bugsnag.Version))
 	})
 
 	t.Run("Manual notify", func(st *testing.T) {
@@ -122,7 +122,7 @@ func TestGin(t *testing.T) {
 				"version": "%s"
 			}
 		}
-		`, hostname, "987zyx", bugsnag.VERSION))
+		`, hostname, "987zyx", bugsnag.Version))
 	})
 }
 

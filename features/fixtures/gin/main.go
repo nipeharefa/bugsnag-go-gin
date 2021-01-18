@@ -9,10 +9,9 @@ import (
 	"strings"
 	"time"
 
-	bugsnag "github.com/bugsnag/bugsnag-go"
-	"github.com/gin-gonic/gin"
-
 	"github.com/bugsnag/bugsnag-go-gin"
+	"github.com/bugsnag/bugsnag-go/v2"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
